@@ -111,8 +111,47 @@ fn main() {
     let p3 = p2 + p1;
     println!("p3: x={}, y={}", p3.x, p3.y);
 
+
+    let string1 = String::from("long string is long");
+
+    {
+        let string2 = String::from("xyz");
+        let result = longest(string1.as_str(), string2.as_str());
+        println!("The longest string is {}", result);
+    }
+
+    let mut point = Point {x: 0, y: 0};
+    let brrowed_point = &point;
+    let another_brrow = &point;
+
+    println!("brrowed Point(x:{}, y:{}), another Point(x:{}, y:{})", point.x, point.y, another_brrow.x, another_brrow.y);
+    println!("brrowed Point(x:{}, y:{}), another Point(x:{}, y:{})", brrowed_point.x, brrowed_point.y, another_brrow.x, another_brrow.y);
+
+    let mutable_blow = &mut point;
+
+    mutable_blow.x = 10;
+    mutable_blow.y = 20;
+    println!("Point(x:{}, y:{})", mutable_blow.x, mutable_blow.y);
+
+    let new_brrowed_point = &point;
+
+
+    println!("Point(x:{}, y:{})", new_brrowed_point.x, new_brrowed_point.y);
+
+
+
+    
 }
 
+// ライフタイム注釈
+// https://doc.rust-jp.rs/book-ja/ch10-03-lifetime-syntax.html
+fn longest<'a>(str0: &'a str, str1: &'a str) -> &'a str {
+    return if str0.len() > str1.len() {
+        str0
+    }else{
+        str1
+    };
+}
 fn length(str: String) -> usize {
     return str.len();
 }
