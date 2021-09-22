@@ -21,6 +21,21 @@ trait  Printable {
     fn print(&self);
 }
 
+struct Owner(i32);
+
+impl Owner {
+    // Annotate lifetimes as in a standalone function.
+    // 通常の関数と同様にライフタイムを明示
+    fn add_one<'a>(&'a mut self) { self.0 += 1; }
+    fn print<'a>(&'a self) {
+        println!("`print`: {}", self.0);
+    }
+
+
+}
+
+
+
 impl<T> Printable for Rect<T> where T: std::fmt::Display {
     fn print(self: &Rect<T>) {
         println!("{}:{}", self.width, self.height);
@@ -49,6 +64,20 @@ impl Printable for User {
         println!("name: {}, description:{}", self.name, des);
     }
 }
+
+/*
+サイズが推定できないためコンパイルすることができない
+enum List {
+    Cons(i32, List),
+    Nil,
+}*/
+
+#[derive(Debug)]
+pub enum List {
+    Cons(i32, Box<List>),
+    Nil,
+}
+
 
 fn main() {
     println!("Hello, world!");
@@ -139,9 +168,26 @@ fn main() {
     println!("Point(x:{}, y:{})", new_brrowed_point.x, new_brrowed_point.y);
 
 
+    let mut owner = Owner{0: 18};
+    owner.add_one();
+    owner.print();
 
+    let list = List::Cons(1,
+        Box::new(List::Cons(2,
+            Box::new(List::Cons(3,
+                Box::new(List::Nil))))));
+
+    println!("list = {:?}", list);
     
 }
+
+/*
+fn failed_borrow<'a>() {
+    let _x = 12;
+
+    // _xはライフタイム'aより短いためエラー
+    let y: &'a i32 = &_x;
+}*/
 
 // ライフタイム注釈
 // https://doc.rust-jp.rs/book-ja/ch10-03-lifetime-syntax.html
